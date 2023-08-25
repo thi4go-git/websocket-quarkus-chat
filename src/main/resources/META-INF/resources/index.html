@@ -19,8 +19,8 @@
                 <div>
                     <input id="name" class="redigir" type="text" placeholder="your name">
                     <button id="connect" class="botao" type="button">Entrar no Chat</button>
-
                 </div>
+                <span class="status" id="status">Não Conectado.</span>
                 <br>
                 <div>
                     <textarea id="chat" class="caixa-texto" disabled="true"></textarea>
@@ -76,6 +76,7 @@
                     console.log("Val: " + name);
                     socket = new WebSocket("ws://" + location.host + "/chat/" + name);
                     socket.onopen = function () {
+                        $("#status").append("Status: Conectado");
                         connected = true;
                         console.log("Connected to the web socket");
                         $("#send").attr("disabled", false);

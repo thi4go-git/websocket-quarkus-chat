@@ -68,6 +68,10 @@ body {
     font-weight: bold;
 }
 
+.status{
+  margin: 10px;
+}
+
 /* Estilos do rodapé */
 .footer {
     background-color: #000000;
