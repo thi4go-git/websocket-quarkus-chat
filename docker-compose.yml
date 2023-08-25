@@ -1,0 +1,14 @@
+version: "3"
+services:
+    suporte-quarkus-backend:
+        container_name: websocket-quarkus-chat
+        image: websocket-quarkus-chat:latest
+        build:
+            context: .
+            dockerfile: src/main/docker/Dockerfile.jvm
+            args:
+                - JAR_FILE=target/websocket-quarkus-chat-1.0.jar
+                - CONTEXT=websocket-quarkus-chat
+        ports:
+            - 8050:8080
+        restart: always
