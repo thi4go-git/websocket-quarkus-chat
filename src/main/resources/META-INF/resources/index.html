@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>ChatBox 2023</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+
+        <div class="header">
+            <h1>ChatBox 2023</h1>
+        </div>
+
+        <div class="body">
+            <div class="largura-total">
+                <div>
+                    <input id="name" class="redigir" type="text" placeholder="your name">
+                    <button id="connect" class="botao" type="button">Entrar no Chat</button>
+
+                </div>
+                <br>
+                <div>
+                    <textarea id="chat" class="caixa-texto" disabled="true"></textarea>
+                </div>
+                <br>
+                <div>
+                    <input class="redigir" id="msg" type="text" placeholder="Digite sua mensagem ...">
+                    <button class="botao" id="send" type="button" disabled>Enviar</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>By &copy; 2023</p>
+        </div>
+
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/patternfly/3.24.0/js/patternfly.min.js"></script>
+
+    <script type="text/javascript">
+        var connected = false;
+        var socket;
+
+        $(document).ready(function () {
+            $("#connect").click(connect);
+            $("#send").click(sendMessage);
+
+            $("#name").keypress(function (event) {
+                if (event.keyCode == 13 || event.which == 13) {
+                    connect();
+                }
+            });
+
+            $("#msg").keypress(function (event) {
+                if (event.keyCode == 13 || event.which == 13) {
+                    sendMessage();
+                }
+            });
+
+            $("#chat").change(function () {
+                scrollToBottom();
+            });
+
+            $("#name").focus();
+        });
+
+        var connect = function () {
+            if (!connected) {
+                var name = $("#name").val();
+                if (name) {
+                    console.log("Val: " + name);
+                    socket = new WebSocket("ws://" + location.host + "/chat/" + name);
+                    socket.onopen = function () {
+                        connected = true;
+                        console.log("Connected to the web socket");
+                        $("#send").attr("disabled", false);
+                        $("#connect").attr("disabled", true);
+                        $("#name").attr("disabled", true);
+                        $("#msg").focus();
+                    };
+                    socket.onmessage = function (m) {
+                        console.log("Got message: " + m.data);
+                        $("#chat").append(m.data + "\n");
+                        scrollToBottom();
+                    };
+                } else {
+                    alert('Informe o seu Nome para acessar o Chat!');
+                }
+            }
+        };
+
+        var sendMessage = function () {
+            if (connected) {
+                var value = $("#msg").val();
+                console.log("Sending " + value);
+                socket.send(value);
+                $("#msg").val("");
+            }
+        };
+
+        var scrollToBottom = function () {
+            $('#chat').scrollTop($('#chat')[0].scrollHeight);
+        };
+
+    </script>
+</body>
+
+</html>
